@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="pdfmaster",
+    name="LundPDFMaster",
     version="0.1",
     packages=find_packages(),
-    url="https://github.com/LundIT/pdfmaster",
+    url="https://github.com/LundIT/LundPDFMaster",
     license="MIT",
     author="Ensar Kaya",
     author_email="ensarben@gmail.com",
