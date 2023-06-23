@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: pdfmaster
+Version: 0.1
+Summary: A Python library for converting office files to PDF using the iLovePDF API
+Home-page: https://github.com/LundIT/pdfmaster
+Author: Ensar Kaya
+Author-email: ensarben@gmail.com
+License: MIT
