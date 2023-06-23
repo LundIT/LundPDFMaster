@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="LundPDFMaster",
     version="0.1",
-    packages=find_packages(),
+    packages=["lund_pdf_master"],
     url="https://github.com/LundIT/LundPDFMaster",
     license="MIT",
     author="Ensar Kaya",
