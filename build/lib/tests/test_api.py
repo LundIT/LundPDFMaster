@@ -1,6 +1,6 @@
 import os
 import unittest
-from src.api import OfficeToPdfConverter
+from lund_pdf_master.OfficeToPDFConverter import OfficeToPdfConverter
 
 
 class TestPdfConverter(unittest.TestCase):
