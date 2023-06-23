@@ -2,12 +2,6 @@
 
 A Python library for converting office files to PDF using the iLovePDF API.
 
-## Installation
-
-Install the library using pip:
-
-pip install pdfmaster
-
 ## Usage
 
 Here's a basic example of how to use the library:
