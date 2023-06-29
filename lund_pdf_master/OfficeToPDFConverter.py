@@ -3,7 +3,7 @@ import requests
 import logging
 
 
-class OfficeToPdfConverter:
+class OfficeToPDFConverter:
     def __init__(self, public_key, secret_key):
         """
         Initialize the converter with the public and secret keys.

@@ -1,11 +1,11 @@
 import os
 import unittest
-from lund_pdf_master.OfficeToPDFConverter import OfficeToPdfConverter
+from lund_pdf_master.OfficeToPDFConverter import OfficeToPDFConverter
 
 
 class TestPdfConverter(unittest.TestCase):
     def setUp(self):
-        self.converter = OfficeToPdfConverter(
+        self.converter = OfficeToPDFConverter(
             "public_key",
             "secret_key",
         )
