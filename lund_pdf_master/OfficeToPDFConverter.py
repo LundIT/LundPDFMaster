@@ -1,3 +1,4 @@
+import os
 import requests
 import logging
 
@@ -94,6 +95,28 @@ class OfficeToPdfConverter:
         }
         response = requests.post(url, headers=self.get_headers(), json=data)
         return response.json()
+    
+    def process_files(self, server, task, server_filenames):
+        """
+        Process the uploaded files with the specified tool.
+
+        Parameters:
+        server (str): The server where the files were uploaded.
+        task (str): The task ID associated with the files.
+        server_filenames (list[str]): The server filenames of the files.
+
+        Returns:
+        dict: The response from the API.
+        """
+        url = f"https://{server}/v1/process"
+        files = [{"server_filename": filename, "filename": f"{filename}.pdf"} for server_filename, filename in server_filenames]
+        data = {
+            "task": task,
+            "tool": "officepdf",
+            "files": files,
+        }
+        response = requests.post(url, headers=self.get_headers(), json=data)
+        return response.json()
 
     def download_file(self, server, task, output_path):
         """
@@ -144,3 +167,47 @@ class OfficeToPdfConverter:
             logging.info("File downloaded successfully.")
         except Exception as e:
             logging.error(f"An error occurred: {e}")
+
+    def convert_bulk_to_pdf_not_working(self, file_paths, output_path):
+        """
+        Convert multiple office files to PDF in a bulk operation.
+
+        This method performs the following steps:
+        1. Starts a new 'officepdf' task.
+        2. Uploads each office file to the iLovePDF API.
+        3. Processes the uploaded files with the 'officepdf' tool.
+        4. Downloads the processed files as a ZIP archive from the iLovePDF API.
+
+        Parameters:
+        file_paths (list[str]): The list of file paths to convert.
+        output_path (str): The path where the resulting ZIP file should be saved.
+
+        Returns:
+        None
+        """
+        logging.info("Starting bulk conversion task...")
+        server, task = self.start_task("officepdf")
+        files = []
+        for file_path in file_paths:
+            server_filename = self.upload_file(server, task, file_path)
+            filename = os.path.basename(file_path)  # Get the original filename
+            files.append((server_filename, filename))
+            print('upload done: ' + server_filename + ' - ' + filename)
+        print(files)
+        self.process_files(server, task, files)
+        print("process files done")
+        logging.info("Downloading files for {}".format(task))
+        self.download_file(server, task, output_path)
+        print("download done")
+
+    def convert_multiple_to_pdf(self, file_paths, output_dir):
+        """
+        Convert multiple office files to PDF.
+        """
+        for file_path in file_paths:
+            filename = os.path.splitext(os.path.basename(file_path))[0]  # Get the original filename without the extension
+            output_path = os.path.join(output_dir, f"{filename}.pdf")
+            self.convert_to_pdf(file_path, output_path)
+
+
+
