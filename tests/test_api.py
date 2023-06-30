@@ -53,9 +53,9 @@ class TestPdfConverter(unittest.TestCase):
     def test_convert_multiple_to_pdf(self):
         # List of file paths to convert
         file_paths = [
-            'tests/file1.docx',
-            'tests/file2.docx',
-            'tests/file3.docx'
+            'tests/input/file1.docx',
+            'tests/input/file2.docx',
+            'tests/input/file3.docx'
         ]
 
         # Output directory for the resulting PDF files

@@ -1,7 +1,7 @@
 import os
 import requests
 import logging
-
+import concurrent.futures
 
 class OfficeToPDFConverter:
     def __init__(self, public_key, secret_key):
@@ -204,10 +204,18 @@ class OfficeToPDFConverter:
         """
         Convert multiple office files to PDF.
         """
-        for file_path in file_paths:
-            filename = os.path.splitext(os.path.basename(file_path))[0]  # Get the original filename without the extension
-            output_path = os.path.join(output_dir, f"{filename}.pdf")
-            self.convert_to_pdf(file_path, output_path)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = []
+            for file_path in file_paths:
+                filename = os.path.splitext(os.path.basename(file_path))[0]  # Get the original filename without the extension
+                output_path = os.path.join(output_dir, f"{filename}.pdf")
+                futures.append(executor.submit(self.convert_to_pdf, file_path, output_path))
+            
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    print(f"An error occurred: {e}")
 
 
 
