@@ -30,8 +30,6 @@ class TestPdfConverter(unittest.TestCase):
         self.converter.convert_to_pdf("tests/file1.docx", "output.pdf")
         # Check that the output file exists
         self.assertTrue(os.path.exists("output.pdf"))
-
-
     def test_convert_multiple_to_pdf(self):
         # List of file paths to convert
         file_paths = [

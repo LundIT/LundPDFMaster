@@ -1,8 +1,41 @@
 Metadata-Version: 2.1
 Name: LundPDFMaster
-Version: 0.1
+Version: 0.1.1
 Summary: A Python library for converting office files to PDF using the iLovePDF API
 Home-page: https://github.com/LundIT/LundPDFMaster
 Author: Ensar Kaya
 Author-email: ensarben@gmail.com
-License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
+# ilovepdf_python
+
+A Python library for converting office files to PDF using the iLovePDF API.
+## Add to Requirements
+Add the following line in the requirements.txt and install the package:
+```python
+git+https://github.com/LundIT/LundPDFMaster
+```
+## Usage
+
+Here's a basic example of how to use the library for a single file:
+
+```python
+from lund_pdf_master import OfficeToPdfConverter
+
+converter = OfficeToPdfConverter('your_public_key', 'your_secret_key')
+converter.convert_to_pdf('path_to_your_file.docx', 'output_path.pdf')
+```
+
+Here's a basic example of how to use the library for multiple files:
+
+```python
+from lund_pdf_master import OfficeToPdfConverter
+
+converter = OfficeToPdfConverter('your_public_key', 'your_secret_key')
+file_paths = ['file1.docx', 'file2.docx', 'file3.docx']
+converter.convert_multiple_to_pdf(file_paths, 'output_directory')
+```
