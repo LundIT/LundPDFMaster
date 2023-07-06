@@ -1,11 +1,15 @@
 # ilovepdf_python
 
 A Python library for converting office files to PDF using the iLovePDF API.
+
 ## Add to Requirements
+
 Add the following line in the requirements.txt and install the package:
+
 ```python
 git+https://github.com/LundIT/LundPDFMaster
 ```
+
 ## Usage
 
 Here's a basic example of how to use the library for a single file:
@@ -26,3 +30,5 @@ converter = OfficeToPdfConverter('your_public_key', 'your_secret_key')
 file_paths = ['file1.docx', 'file2.docx', 'file3.docx']
 converter.convert_multiple_to_pdf(file_paths, 'output_directory')
 ```
+
+This project is licensed under the terms of the MIT license
