@@ -1,13 +1,11 @@
-# ilovepdf_python
+# Lund PDF Master
 
 A Python library for converting office files to PDF using the iLovePDF API.
 
-## Add to Requirements
-
-Add the following line in the requirements.txt and install the package:
+## Install the package
 
 ```python
-git+https://github.com/LundIT/LundPDFMaster
+pip install LundPDFMaster
 ```
 
 ## Usage
