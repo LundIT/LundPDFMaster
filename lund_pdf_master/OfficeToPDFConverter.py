@@ -149,6 +149,8 @@ class OfficeToPDFConverter:
         Returns:
         None
         """
+        # Create output directory if it doesn't exist
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
         try:
             logging.info("Starting conversion task...")
             server, task = self.start_task("officepdf")
@@ -173,6 +175,8 @@ class OfficeToPDFConverter:
         """
         Convert multiple office files to PDF.
         """
+        # Create output directory if it doesn't exist
+        os.makedirs(output_dir, exist_ok=True)
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = []
             for file_path in file_paths:
