@@ -1,7 +1,9 @@
 import os
+import traceback
 import requests
 import logging
 import concurrent.futures
+from rest_framework.exceptions import APIException
 
 class OfficeToPDFConverter:
     def __init__(self, public_key, secret_key):
@@ -167,7 +169,7 @@ class OfficeToPDFConverter:
             logging.info("File downloaded successfully.")
         except Exception as e:
             logging.error(f"An error occurred: {e}")
-            raise
+            raise APIException({"error": f"An error occurred:", "traceback": traceback.format_exc()})
 
     def convert_multiple_to_pdf(self, file_paths, output_dir):
         """
