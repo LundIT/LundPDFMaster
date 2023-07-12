@@ -167,6 +167,7 @@ class OfficeToPDFConverter:
             logging.info("File downloaded successfully.")
         except Exception as e:
             logging.error(f"An error occurred: {e}")
+            raise
 
     def convert_multiple_to_pdf(self, file_paths, output_dir):
         """
