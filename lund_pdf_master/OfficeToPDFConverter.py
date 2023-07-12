@@ -168,38 +168,6 @@ class OfficeToPDFConverter:
         except Exception as e:
             logging.error(f"An error occurred: {e}")
 
-    def convert_bulk_to_pdf_not_working(self, file_paths, output_path):
-        """
-        Convert multiple office files to PDF in a bulk operation.
-
-        This method performs the following steps:
-        1. Starts a new 'officepdf' task.
-        2. Uploads each office file to the iLovePDF API.
-        3. Processes the uploaded files with the 'officepdf' tool.
-        4. Downloads the processed files as a ZIP archive from the iLovePDF API.
-
-        Parameters:
-        file_paths (list[str]): The list of file paths to convert.
-        output_path (str): The path where the resulting ZIP file should be saved.
-
-        Returns:
-        None
-        """
-        logging.info("Starting bulk conversion task...")
-        server, task = self.start_task("officepdf")
-        files = []
-        for file_path in file_paths:
-            server_filename = self.upload_file(server, task, file_path)
-            filename = os.path.basename(file_path)  # Get the original filename
-            files.append((server_filename, filename))
-            print('upload done: ' + server_filename + ' - ' + filename)
-        print(files)
-        self.process_files(server, task, files)
-        print("process files done")
-        logging.info("Downloading files for {}".format(task))
-        self.download_file(server, task, output_path)
-        print("download done")
-
     def convert_multiple_to_pdf(self, file_paths, output_dir):
         """
         Convert multiple office files to PDF.
