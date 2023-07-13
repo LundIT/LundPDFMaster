@@ -152,8 +152,11 @@ class OfficeToPDFConverter:
         None
         """
         # Create output directory if it doesn't exist
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
         try:
+            last_slash_index = output_path.rfind("/")
+            output_path_dir = output_path[:last_slash_index + 1]
+            os.makedirs(output_path_dir, exist_ok=True)
+
             logging.info("Starting conversion task...")
             server, task = self.start_task("officepdf")
             logging.info("Task started successfully.")
