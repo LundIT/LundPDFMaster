@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as readme_file:
 
 setup(
     name="LundPDFMaster",
-    version="1.1.0",
+    version="1.2.0",
     author="Ensar Kaya",
     author_email="e.kaya@lund-it.com",
     description="A Python library for converting office files to PDF using the iLovePDF API",
