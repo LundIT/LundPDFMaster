@@ -4,6 +4,8 @@ import requests
 import logging
 import concurrent.futures
 from rest_framework.exceptions import APIException
+import io
+
 
 class OfficeToPDFConverter:
     def __init__(self, public_key, secret_key):
@@ -70,11 +72,20 @@ class OfficeToPDFConverter:
         """
         url = f"https://{server}/v1/upload"
         data = {"task": task}
-        with open(file_path, "rb") as f:
-            files = {"file": f}
-            response = requests.post(
-                url, headers=self.get_headers(), files=files, data=data
-            )
+        if os.getenv("STORAGE_TYPE") == "SHAREPOINT":
+            from django.core.files.storage import default_storage
+            from django.core.files import File
+            with default_storage.open(file_path, "rb") as f:
+                files = {"file": File(io.BytesIO(f.read()), name=os.path.basename(file_path))}
+                response = requests.post(
+                    url, headers=self.get_headers(), files=files, data=data
+                )
+        else:
+            with open(file_path, "rb") as f:
+                files = {"file": f}
+                response = requests.post(
+                    url, headers=self.get_headers(), files=files, data=data
+                )
         return response.json()["server_filename"]
 
     def process_file(self, server, task, server_filename):
@@ -97,7 +108,7 @@ class OfficeToPDFConverter:
         }
         response = requests.post(url, headers=self.get_headers(), json=data)
         return response.json()
-    
+
     def process_files(self, server, task, server_filenames):
         """
         Process the uploaded files with the specified tool.
@@ -111,7 +122,8 @@ class OfficeToPDFConverter:
         dict: The response from the API.
         """
         url = f"https://{server}/v1/process"
-        files = [{"server_filename": filename, "filename": f"{filename}.pdf"} for server_filename, filename in server_filenames]
+        files = [{"server_filename": filename, "filename": f"{filename}.pdf"} for server_filename, filename in
+                 server_filenames]
         data = {
             "task": task,
             "tool": "officepdf",
@@ -131,8 +143,15 @@ class OfficeToPDFConverter:
         """
         url = f"https://{server}/v1/download/{task}"
         response = requests.get(url, headers=self.get_headers())
-        with open(output_path, "wb") as f:
-            f.write(response.content)
+        if os.getenv("STORAGE_TYPE") == "SHAREPOINT":
+            from django.core.files.storage import default_storage
+            from django.core.files import File
+
+            default_storage.save(output_path,
+                                 content=File(io.BytesIO(response.content), name=os.path.basename(output_path)))
+        else:
+            with open(output_path, "wb") as f:
+                f.write(response.content)
 
     def convert_to_pdf(self, file_path: str, output_path: str) -> None:
         """
@@ -152,7 +171,15 @@ class OfficeToPDFConverter:
         None
         """
         # Create output directory if it doesn't exist
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        if os.getenv("STORAGE_TYPE") == "SHAREPOINT":
+            from django.core.files.storage import default_storage
+            from django.core.files import File
+            if not default_storage.exists(f"{os.path.dirname(output_path)}/"):
+                default_storage.save(os.path.dirname(output_path) + '/dummy.txt',
+                                     content=File(io.BytesIO(), name='dummy.txt'))
+                default_storage.delete(os.path.dirname(output_path) + '/dummy.txt')
+        else:
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
         try:
             logging.info("Starting conversion task...")
             server, task = self.start_task("officepdf")
@@ -178,14 +205,22 @@ class OfficeToPDFConverter:
         Convert multiple office files to PDF.
         """
         # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
+        if os.getenv("STORAGE_TYPE") == "SHAREPOINT":
+            from django.core.files.storage import default_storage
+            from django.core.files import File
+            if not default_storage.exists(f"{output_dir}"):
+                default_storage.save(output_dir + 'dummy.txt', content=File(io.BytesIO(), name='dummy.txt'))
+                default_storage.delete(output_dir + 'dummy.txt')
+        else:
+            os.makedirs(output_dir, exist_ok=True)
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = []
             for file_path in file_paths:
-                filename = os.path.splitext(os.path.basename(file_path))[0]  # Get the original filename without the extension
+                filename = os.path.splitext(os.path.basename(file_path))[
+                    0]  # Get the original filename without the extension
                 output_path = os.path.join(output_dir, f"{filename}.pdf")
                 futures.append(executor.submit(self.convert_to_pdf, file_path, output_path))
-            
+
             for future in concurrent.futures.as_completed(futures):
                 try:
                     future.result()
